@@ -6,14 +6,13 @@ export default ({ isTicking, time }) => {
     fontSize: 60,
     marginBottom: 50,
     marginTop: 50,
-    textTransform: 'uppercase',
     textAlign: 'center',
     fontFamily: 'monospace',
   };
 
   const display = isTicking
     ? (<div style={clockStyle}>{time || ''}</div>)
-    : (<div style={clockStyle}>stopped</div>);
+    : (<div style={clockStyle}>STOPPED</div>);
 
   return (
     <div>{display}</div>
