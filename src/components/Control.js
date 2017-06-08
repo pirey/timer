@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({ ticking, start, stop }) => {
+export default ({ isTicking, start, stop }) => {
 
   const btnStyle = {
     width: '100%',
@@ -14,7 +14,7 @@ export default ({ ticking, start, stop }) => {
     fontWeight: 'bold',
   };
 
-  const btn = ticking
+  const btn = isTicking
     ? (<button style={btnStyle} onClick={stop}>Stop</button>)
     : (<button style={btnStyle} onClick={start}>Start</button>);
 

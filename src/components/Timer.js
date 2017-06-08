@@ -9,30 +9,54 @@ class Timer extends Component {
     super(props);
 
     this.state = {
-      ticking: false,
+      isTicking: false,
       intervalId: null,
-      time: ''
+      time: '',
+      countdownStarted: null,
     };
 
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
   }
 
+  generateCountdown() {
+    const countdown = new Date();
+    const twnentyMinutes = 1000 * 60 * 20;
+    countdown.setTime(countdown.getTime() + twnentyMinutes);
+
+    //const threeSeconds = 1000 * 3;
+    //countdown.setTime(countdown.getTime() + threeSeconds);
+
+    return countdown;
+  }
+
   getTimeString() {
+
     const now = new Date();
-    const h = now.getHours();
-    const i = now.getMinutes();
-    const s = now.getSeconds();
-    return `${h}:${i}:${s}`;
+    const countdown = (this.state.countdownStarted) ? this.state.countdownStarted : this.generateCountdown();
+
+    const distance = countdown - now;
+
+    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+
+    if (distance < 1000) {
+      this.stopTimer();
+      return '';
+    }
+
+    return `${m}m ${s}s`;
   }
 
   startTimer() {
     const interval = 1000;
 
     this.setState((prev, props) => ({
-      ticking: true,
+      isTicking: true,
       intervalId: setInterval(this.updateTimer.bind(this), interval),
       time: this.getTimeString(),
+      countdownStarted: this.generateCountdown(),
     }));
   }
 
@@ -42,26 +66,27 @@ class Timer extends Component {
     clearInterval(intervalId);
 
     this.setState((prev, props) => ({
-      ticking: false,
+      isTicking: false,
       intervalId: null,
+      time: '',
+      countdownStarted: null,
     }));
   }
 
   updateTimer() {
-
     this.setState((prev, props) => ({
       time: this.getTimeString(),
     }));
   }
 
   render() {
-    const { ticking } = this.state;
+    const { isTicking } = this.state;
 
     return (
       <Flex full center vertical>
-        <Clock ticking={ticking} time={this.state.time} />
+        <Clock isTicking={isTicking} time={this.state.time} />
         <Control
-          ticking={ticking}
+          isTicking={isTicking}
           start={this.startTimer}
           stop={this.stopTimer}
         />
