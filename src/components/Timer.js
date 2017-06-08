@@ -12,51 +12,42 @@ class Timer extends Component {
       isTicking: false,
       intervalId: null,
       time: '',
-      countdownStarted: null,
+      countdownEnd: null,
     };
 
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
   }
 
-  generateCountdown() {
-    const countdown = new Date();
+  generateCountdownEnd() {
+    const countdown = Date.now();
     const twnentyMinutes = 1000 * 60 * 20;
-    countdown.setTime(countdown.getTime() + twnentyMinutes);
+    return countdown + twnentyMinutes;
 
-    //const threeSeconds = 1000 * 3;
-    //countdown.setTime(countdown.getTime() + threeSeconds);
-
-    return countdown;
+    //const threeSeconds = 1000 * 1;
+    //return countdown + threeSeconds;
   }
 
-  getTimeString() {
+	millisToMinutesAndSeconds(millis) {
+		const m = Math.floor(millis / 60000);
+		const s = ((millis % 60000) / 1000).toFixed(0);
+    const prefix = (s < 10 ? '0' : '');
 
-    const now = new Date();
-    const countdown = (this.state.countdownStarted) ? this.state.countdownStarted : this.generateCountdown();
-
-    const distance = countdown - now;
-
-    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-
-    if (distance < 1000) {
-      this.stopTimer();
-      return '';
-    }
-
-    return `${m}m ${s}s`;
-  }
+    return (parseInt(s, 10) === 60)
+      ? `${m + 1}:00`
+      :`${m}:${prefix}${s}`;
+	}
 
   startTimer() {
     const interval = 1000;
 
+    const countdownEnd = this.generateCountdownEnd();
+
     this.setState((prev, props) => ({
       isTicking: true,
       intervalId: setInterval(this.updateTimer.bind(this), interval),
-      time: this.getTimeString(),
-      countdownStarted: this.generateCountdown(),
+      time: this.millisToMinutesAndSeconds(countdownEnd - Date.now()),
+      countdownEnd,
     }));
   }
 
@@ -69,13 +60,20 @@ class Timer extends Component {
       isTicking: false,
       intervalId: null,
       time: '',
-      countdownStarted: null,
+      countdownEnd: null,
     }));
   }
 
   updateTimer() {
+    const { countdownEnd } = this.state;
+    const now = Date.now();
+
+    if (now >= countdownEnd) {
+      return this.stopTimer();
+    }
+
     this.setState((prev, props) => ({
-      time: this.getTimeString(),
+      time: this.millisToMinutesAndSeconds(countdownEnd - Date.now()),
     }));
   }
 
