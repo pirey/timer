@@ -1,5 +1,6 @@
 {
   "name": "timer",
+  "homepage": "https://pirey.github.io/timer",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
