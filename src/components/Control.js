@@ -1,6 +1,7 @@
 import React from 'react';
+import Flex from './Flex';
 
-export default ({ isTicking, start, stop }) => {
+export default ({ isTicking, isPaused, start, stop, pause }) => {
 
   const btnStyle = {
     width: '100%',
@@ -12,11 +13,21 @@ export default ({ isTicking, start, stop }) => {
     cursor: 'pointer',
     textTransform: 'uppercase',
     fontWeight: 'bold',
+    margin: '0 20px',
   };
 
   const btn = isTicking
-    ? (<button style={btnStyle} onClick={stop}>Stop</button>)
-    : (<button style={btnStyle} onClick={start}>Start</button>);
+    ? (
+      <Flex>
+        <button style={btnStyle} onClick={pause}>Pause</button>
+        <button style={btnStyle} onClick={stop}>Stop</button>
+      </Flex>
+    )
+    : (
+      <Flex>
+        <button style={btnStyle} onClick={start}>{isPaused?'Resume':'Start'}</button>
+      </Flex>
+    );
 
   return (
     <div>{btn}</div>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({ isTicking, time }) => {
+export default ({ isTicking, isPaused, time }) => {
 
   const clockStyle = {
     fontSize: 60,
@@ -10,11 +10,7 @@ export default ({ isTicking, time }) => {
     fontFamily: 'monospace',
   };
 
-  const display = isTicking
-    ? (<div style={clockStyle}>{time || ''}</div>)
-    : (<div style={clockStyle}>STOPPED</div>);
-
   return (
-    <div>{display}</div>
+    <div style={clockStyle}>{time || ''}</div>
   );
 };

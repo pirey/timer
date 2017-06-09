@@ -8,16 +8,21 @@ class Timer extends Component {
   constructor(props) {
     super(props);
 
+    const remaining = this.generateDuration() - Date.now();
+    const time = this.millisToMinutesAndSeconds(remaining);
+
     this.state = {
       intervalInMilliseconds: 1000,
       isTicking: false,
+      isPaused: false,
       intervalId: null,
-      time: '',
-      remaining: null,
+      time,
+      remaining,
     };
 
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
+    this.pauseTimer = this.pauseTimer.bind(this);
   }
 
   generateDuration() {
@@ -27,6 +32,11 @@ class Timer extends Component {
 
     //const threeSeconds = 1000 * 3;
     //return now + threeSeconds;
+  }
+
+  generateRemaining() {
+    const duration = this.generateDuration();
+    return duration - Date.now();
   }
 
   milToMinutes(millis) {
@@ -50,26 +60,41 @@ class Timer extends Component {
 
   startTimer() {
     const { intervalInMilliseconds } = this.state;
+
+    this.setState((prev, props) => {
+
+      return {
+        isTicking: true,
+        intervalId: setInterval(this.updateTimer.bind(this), intervalInMilliseconds),
+      };
+    });
+  }
+
+  stopTimer() {
+    const { intervalId } = this.state;
     const remaining = this.generateDuration() - Date.now();
+    const time = this.millisToMinutesAndSeconds(remaining);
+
+    clearInterval(intervalId);
 
     this.setState((prev, props) => ({
-      isTicking: true,
-      intervalId: setInterval(this.updateTimer.bind(this), intervalInMilliseconds),
-      time: this.millisToMinutesAndSeconds(remaining),
+      isTicking: false,
+      isPaused: false,
+      intervalId: null,
+      time,
       remaining,
     }));
   }
 
-  stopTimer() {
+  pauseTimer() {
     const { intervalId } = this.state;
 
     clearInterval(intervalId);
 
     this.setState((prev, props) => ({
       isTicking: false,
+      isPaused: true,
       intervalId: null,
-      time: '',
-      remaining: null,
     }));
   }
 
@@ -88,15 +113,17 @@ class Timer extends Component {
   }
 
   render() {
-    const { isTicking } = this.state;
+    const { isTicking, isPaused } = this.state;
 
     return (
       <Flex full center vertical>
-        <Clock isTicking={isTicking} time={this.state.time} />
+        <Clock isTicking={isTicking} isPaused={isPaused} time={this.state.time} />
         <Control
           isTicking={isTicking}
+          isPaused={isPaused}
           start={this.startTimer}
           stop={this.stopTimer}
+          pause={this.pauseTimer}
         />
       </Flex>
     );
