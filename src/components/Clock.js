@@ -3,7 +3,7 @@ import React from 'react';
 export default ({ isTicking, isPaused, time }) => {
 
   const clockStyle = {
-    fontSize: 60,
+    fontSize: '7em',
     marginBottom: 50,
     marginTop: 50,
     textAlign: 'center',

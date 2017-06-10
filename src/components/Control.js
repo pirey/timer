@@ -13,7 +13,7 @@ export default ({ isTicking, isPaused, start, stop, pause }) => {
     cursor: 'pointer',
     textTransform: 'uppercase',
     fontWeight: 'bold',
-    margin: '0 20px',
+    margin: '0 10px',
   };
 
   const btn = isTicking
